@@ -42,7 +42,7 @@ describe('Aggregator: Build', () => {
         .setup(
           {
             '.babelrc': `{"presets": [["${require.resolve(
-              'babel-preset-env',
+              '@babel/preset-env',
             )}", {"modules": false}]]}`,
             '.bowerrc': JSON.stringify(bowerrc, null, 2),
             'petri-specs/specs.infra.Dummy.json': fx.petriSpec(),
@@ -495,7 +495,7 @@ describe('Aggregator: Build', () => {
       resp = test
         .setup({
           '.babelrc': `{"presets": [["${require.resolve(
-            'babel-preset-env',
+            '@babel/preset-env',
           )}", {"modules": false}]]}`,
           'src/a.js': `export default "I'm a module!"; import './a.scss'; import './a.st.css'; require('lodash/map')`,
           'src/a.scss': `.x {.y {display: flex;}}`,
@@ -604,7 +604,7 @@ describe('Aggregator: Build', () => {
           'src/styles/style.scss': `.a {.b {color: red;}}`,
           'tsconfig.json': fx.tsconfig(),
           '.babelrc': `{"plugins": ["${require.resolve(
-            'babel-plugin-transform-es2015-block-scoping',
+            '@babel/plugin-transform-block-scoping',
           )}"]}`,
           'package.json': fx.packageJson(
             {

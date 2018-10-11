@@ -243,7 +243,7 @@ describe('Aggregator: e2e', () => {
             Object.assign(cdnConfigurations(), { runIndividualTranspiler }),
           )},
           "babel": { "plugins": ["${require.resolve(
-            'babel-plugin-transform-es2015-modules-commonjs',
+            '@babel/plugin-transform-modules-commonjs',
           )}"] }
         }`,
     });
