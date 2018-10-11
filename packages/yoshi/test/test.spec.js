@@ -390,7 +390,7 @@ describe('Aggregator: Test', () => {
           ...setupMediaFilesExtensions(imageExtensions, 'image'),
           ...setupMediaFilesExtensions(audioExtensions, 'audio'),
           '.babelrc': `{"plugins": ["${require.resolve(
-            'babel-plugin-transform-es2015-modules-commonjs',
+            '@babel/plugin-transform-modules-commonjs',
           )}"]}`,
           'test/mocha-setup.js': 'global.foo = 123',
           'src/getData1.graphql': 'query GetData1 { id, name }',
@@ -633,7 +633,7 @@ describe('Aggregator: Test', () => {
           const res = customTest
             .setup({
               '.babelrc': `{"plugins": ["${require.resolve(
-                'babel-plugin-transform-es2015-modules-commonjs',
+                '@babel/plugin-transform-modules-commonjs',
               )}"]}`,
               'node_modules/my-unprocessed-module/index.js': 'export default 1',
               'test/some.js': `import x from 'my-unprocessed-module'; export default x => x`,
