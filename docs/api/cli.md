@@ -44,7 +44,7 @@ Flag | Short Flag | Description | Default Value
 
 This task will perform the following:
 
-1. Compile using `TypeScript` (`*.ts`) or `babel` (`*.js`) files into `dist/`. In case you do not want to transpile server (node), you can remove `.babelrc`/`tsconfig`/package json's `babel` key. If you still need those (for transpiling client code), please use `yoshi.runIndividualTranspiler`.
+1. Compile using `TypeScript` (`*.ts`) or `babel` (`*.js`) files into `dist/`. In case you do not want to transpile server (node), you can remove `.babelrc`/`babel.config.js`/`tsconfig`/package json's `babel` key. If you still need those (for transpiling client code), please use `yoshi.runIndividualTranspiler`.
 2. Copy assets to `dist` folder (ejs/html/images...).
 3. Add [Webpack stats](https://webpack.js.org/api/stats/) files to `target/`. Two files will be created: `target/webpack-stats.min.json` and `target/webpack-stats.json` for production and development builds respectively. These files can later be used for [bundle analysis](docs/faq/WEBPACK-ANALYZE.md).
 
