@@ -16,7 +16,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "babel-register": "^6.26.0",
+    "@babel/register": "^7.0.0",
     "chokidar": "^2.0.4",
     "cosmiconfig": "^4.0.0",
     "detect-port": "^1.2.3",
