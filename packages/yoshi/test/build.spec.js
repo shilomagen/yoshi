@@ -432,7 +432,7 @@ describe('Aggregator: Build', () => {
     });
 
     it('should transpile imports to commonjs', () => {
-      expect(test.content('dist/src/a.js')).to.contain("require('./b')");
+      expect(test.content('dist/src/a.js')).to.contain('require("./b")');
     });
 
     it('should tree shake unused variable', () => {

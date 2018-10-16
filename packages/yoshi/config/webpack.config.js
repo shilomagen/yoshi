@@ -10,6 +10,7 @@ const TpaStyleWebpackPlugin = require('tpa-style-webpack-plugin');
 const RtlCssPlugin = require('rtlcss-webpack-plugin');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const DynamicPublicPath = require('../src/webpack-plugins/dynamic-public-path');
+const EnvirnmentMarkPlugin = require('../src/webpack-plugins/environment-mark-plugin');
 const { localIdentName, staticsDomain } = require('../src/constants');
 const { SRC_DIR, BUILD_DIR } = require('yoshi-config/paths');
 
@@ -244,7 +245,7 @@ function createCommonWebpackConfig({ isDebug = true } = {}) {
       new CaseSensitivePathsPlugin(),
       // Way of communicating to `babel-preset-yoshi` or `babel-preset-wix` that
       // it should optimize for Webpack
-      { apply: () => (process.env.IN_WEBPACK = 'true') },
+      new EnvirnmentMarkPlugin(),
     ],
 
     module: {

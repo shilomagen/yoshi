@@ -1,0 +1,41 @@
+{
+  "name": "babel-plugin-transform-hmr-runtime",
+  "version": "4.0.0",
+  "description": "Babel plugin to make React Hot Loader work with 0 configuration",
+  "main": "index.js",
+  "keywords": [
+    "babel",
+    "preset",
+    "yoshi"
+  ],
+  "author": "Yoshi team & Artem Yavorskyi <artemy@wix.com>",
+  "license": "ISC",
+  "peerDependencies": {
+    "@babel/core": "^7.1.2"
+  },
+  "dependencies": {
+    "@babel/helper-plugin-test-runner": "7.1.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.0.0",
+    "babel-core": "^7.0.0-0",
+    "jest": "^23.6.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-syntax-jsx"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "/__tests__/fixtures"
+    ]
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

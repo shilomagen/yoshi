@@ -56,7 +56,6 @@ module.exports = function(api, opts = {}) {
         {
           // 2 options blow are usualy handled by pollyfil.io.
           helpers: false,
-          polyfill: false,
           regenerator: true,
         },
       ],
@@ -69,10 +68,9 @@ module.exports = function(api, opts = {}) {
           decoratorsBeforeExport: true,
         },
       ],
-      // Leave dynamic imports untranspiled for webpack
-      inWebpack
-        ? require('@babel/plugin-syntax-dynamic-import')
-        : require('babel-plugin-dynamic-import-node').default, // https://github.com/airbnb/babel-plugin-dynamic-import-node/issues/27
+      require('@babel/plugin-syntax-dynamic-import'),
+      // https://github.com/airbnb/babel-plugin-dynamic-import-node/issues/27
+      !inWebpack && require('babel-plugin-dynamic-import-node').default,
       // Current Node and new browsers (in development environment) already implement it so
       // just add the syntax of Object { ...rest, ...spread }
       (isDevelopment || isTest) &&

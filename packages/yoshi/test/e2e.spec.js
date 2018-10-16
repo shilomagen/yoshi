@@ -127,7 +127,7 @@ describe('Aggregator: e2e', () => {
       );
     });
 
-    it('should use babel-register', function() {
+    it('should use @babel/register', function() {
       this.timeout(60000);
 
       const res = test
@@ -143,7 +143,7 @@ describe('Aggregator: e2e', () => {
       );
     });
 
-    it('should not use babel-register', function() {
+    it('should not use @babel/register', function() {
       this.timeout(60000);
 
       const res = test

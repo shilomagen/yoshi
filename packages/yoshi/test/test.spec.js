@@ -496,7 +496,7 @@ describe('Aggregator: Test', () => {
       expect(res.stdout).to.contain('passed css');
     });
 
-    describe('with babel-register', () => {
+    describe('with @babel/register', () => {
       it('should transpile both sources and specified 3rd party modules in runtime', () => {
         expect(res.stdout).to.contain('passed babel');
       });
@@ -628,7 +628,7 @@ describe('Aggregator: Test', () => {
         expect(res.stdout).to.not.contain('cdn');
       });
 
-      describe('with babel-register', () => {
+      describe('with @babel/register', () => {
         it('should transpile explicitly configured externalUnprocessedModules', function() {
           const res = customTest
             .setup({
