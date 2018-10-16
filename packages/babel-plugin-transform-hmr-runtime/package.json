@@ -13,11 +13,9 @@
   "peerDependencies": {
     "@babel/core": "^7.1.2"
   },
-  "dependencies": {
-    "@babel/helper-plugin-test-runner": "7.1.0"
-  },
   "devDependencies": {
     "@babel/plugin-syntax-jsx": "^7.0.0",
+    "@babel/helper-plugin-test-runner": "7.1.0",
     "babel-core": "^7.0.0-0",
     "jest": "^23.6.0"
   },
