@@ -151,7 +151,7 @@ describe('Aggregator: e2e', () => {
         .execute('test', ['--protractor'], outsideTeamCity);
 
       expect(res.code).to.equal(1);
-      expect(res.stdout).to.contain('Unexpected token import');
+      expect(res.stdout).to.contain('Unexpected identifier');
     });
   });
 
@@ -244,7 +244,7 @@ describe('Aggregator: e2e', () => {
           )},
           "babel": { "plugins": ["${require.resolve(
             '@babel/plugin-transform-modules-commonjs',
-          )}"] }
+          )}"]}
         }`,
     });
   }
