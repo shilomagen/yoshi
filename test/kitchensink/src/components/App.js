@@ -18,6 +18,8 @@ class App extends Component {
       'global-scss-inclusion',
       'sass-inclusion',
       'global-sass-inclusion',
+      'less-inclusion',
+      'global-less-inclusion',
       'json-inclusion',
     ];
 

@@ -97,6 +97,26 @@ describe('Integration', () => {
       ]);
     });
 
+    it('less inclusion', async () => {
+      await initTest('less-inclusion');
+
+      const className = await page.$eval('#feature-less-inclusion', elm =>
+        elm.getAttribute('class'),
+      );
+
+      await matchCSS(page, [
+        new RegExp(`.${className}{background:.+;color:.+}`),
+      ]);
+    });
+
+    it('global less inclusion', async () => {
+      await initTest('global-less-inclusion');
+
+      await matchCSS(page, [
+        /\.globalLessModulesInclusion\{background:.+;color:.+}/,
+      ]);
+    });
+
     it('json inclusion', async () => {
       await initTest('json-inclusion');
 
