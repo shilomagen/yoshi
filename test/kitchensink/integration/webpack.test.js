@@ -21,9 +21,6 @@ const matchCSS = async (page, regexes) => {
     }
 
     return href;
-    // return fetch(href)
-    //   .then(response => response.text())
-    //   .then(text => text.replace(/\s/g, ''));
   });
 
   const style = await request(url);
@@ -57,6 +54,26 @@ describe('Integration', () => {
 
       await matchCSS(page, [
         /\.globalCssModulesInclusion\{background:.+;color:.+}/,
+      ]);
+    });
+
+    it('scss inclusion', async () => {
+      await initTest('scss-inclusion');
+
+      const className = await page.$eval('#feature-scss-inclusion', elm =>
+        elm.getAttribute('class'),
+      );
+
+      await matchCSS(page, [
+        new RegExp(`.${className}{background:.+;color:.+}`),
+      ]);
+    });
+
+    it('global scss inclusion', async () => {
+      await initTest('global-scss-inclusion');
+
+      await matchCSS(page, [
+        /\.globalScssModulesInclusion\{background:.+;color:.+}/,
       ]);
     });
 
