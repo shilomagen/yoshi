@@ -20,6 +20,8 @@ class App extends Component {
       'global-sass-inclusion',
       'less-inclusion',
       'global-less-inclusion',
+      'small-image-inclusion',
+      'large-image-inclusion',
       'json-inclusion',
     ];
 

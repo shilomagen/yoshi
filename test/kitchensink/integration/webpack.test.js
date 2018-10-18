@@ -117,6 +117,30 @@ describe('Integration', () => {
       ]);
     });
 
+    it('small image inclusion', async () => {
+      await initTest('small-image-inclusion');
+
+      const imageSource = await page.$eval(
+        '#feature-small-image-inclusion',
+        elm => elm.src,
+      );
+
+      expect(imageSource).toMatch(/^data:image\/jpeg;base64.+==$/);
+    });
+
+    it('large image inclusion', async () => {
+      await initTest('large-image-inclusion');
+
+      const imageSource = await page.$eval(
+        '#feature-large-image-inclusion',
+        elm => elm.src,
+      );
+
+      expect(imageSource).toMatch(
+        /^.+components\/features\/LargeImageInclusion\/large-bart-simpson.gif.+$/,
+      );
+    });
+
     it('json inclusion', async () => {
       await initTest('json-inclusion');
 
