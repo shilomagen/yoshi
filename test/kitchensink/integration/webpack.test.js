@@ -77,6 +77,26 @@ describe('Integration', () => {
       ]);
     });
 
+    it('sass inclusion', async () => {
+      await initTest('sass-inclusion');
+
+      const className = await page.$eval('#feature-sass-inclusion', elm =>
+        elm.getAttribute('class'),
+      );
+
+      await matchCSS(page, [
+        new RegExp(`.${className}{background:.+;color:.+}`),
+      ]);
+    });
+
+    it('global sass inclusion', async () => {
+      await initTest('global-sass-inclusion');
+
+      await matchCSS(page, [
+        /\.globalSassModulesInclusion\{background:.+;color:.+}/,
+      ]);
+    });
+
     it('json inclusion', async () => {
       await initTest('json-inclusion');
 
