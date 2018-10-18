@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.global.sass';
+import './assets/style.global.sass';
 
 export default () => (
   <p className="globalSassModulesInclusion">We love useless text.</p>

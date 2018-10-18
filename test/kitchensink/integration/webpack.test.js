@@ -137,7 +137,7 @@ describe('Integration', () => {
       );
 
       expect(imageSource).toMatch(
-        /^.+components\/features\/LargeImageInclusion\/large-bart-simpson.gif.+$/,
+        /^.+components\/features\/assets\/large-bart-simpson.gif.+$/,
       );
     });
 

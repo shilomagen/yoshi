@@ -35,9 +35,7 @@ class App extends Component {
 
     const camelCased = toCamelCase(feature);
 
-    const {
-      default: component,
-    } = await import(`./features/${camelCased}/${camelCased}`);
+    const { default: component } = await import(`./features/${camelCased}`);
 
     this.setState({ feature: component });
   }

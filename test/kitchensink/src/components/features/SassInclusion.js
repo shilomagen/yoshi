@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './style.sass';
+import styles from './assets/style.sass';
 
 export default () => (
   <div>
