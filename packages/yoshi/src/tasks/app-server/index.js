@@ -5,11 +5,12 @@ const mkdirp = require('mkdirp');
 const spawn = require('cross-spawn');
 const detect = require('detect-port');
 const debounce = require('lodash/debounce');
+const { PORT } = require('../../constants');
 const waitPort = require('wait-port');
 
 let server;
 let port;
-const defaultPort = Number(process.env.PORT) || 3000;
+const defaultPort = Number(process.env.PORT) || PORT;
 const serverDebugHost = '127.0.0.1';
 
 function ensureServerIsNotRunning(newPort) {

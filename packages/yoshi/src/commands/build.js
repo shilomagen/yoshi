@@ -7,6 +7,7 @@ const parseArgs = require('minimist');
 const LoggerPlugin = require('../plugins/haste-plugin-yoshi-logger');
 const globs = require('yoshi-config/globs');
 const path = require('path');
+const { STATS_FILE } = require('yoshi-config/paths');
 const {
   runIndividualTranspiler,
   petriSpecsConfig,
@@ -96,9 +97,11 @@ module.exports = runner.command(
           {
             ...defaultOptions,
             callbackPath: productionCallbackPath,
+            statsFilename: cliArgs.stats ? STATS_FILE : false,
             configParams: {
               isDebug: false,
               isAnalyze: cliArgs.analyze,
+              withLocalSourceMaps: cliArgs['source-map'],
             },
           },
           { title: 'webpack-production' },
@@ -110,7 +113,10 @@ module.exports = runner.command(
           {
             ...defaultOptions,
             callbackPath: debugCallbackPath,
-            configParams: { isDebug: true },
+            configParams: {
+              isDebug: true,
+              withLocalSourceMaps: cliArgs['source-map'],
+            },
           },
           { title: 'webpack-debug' },
         );

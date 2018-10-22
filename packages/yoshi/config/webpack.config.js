@@ -1,26 +1,35 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const { isObject } = require('lodash');
+const nodeExternals = require('webpack-node-externals');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const StylableWebpackPlugin = require('stylable-webpack-plugin');
+const StylableWebpackPlugin = require('@stylable/webpack-plugin');
 const TpaStyleWebpackPlugin = require('tpa-style-webpack-plugin');
 const RtlCssPlugin = require('rtlcss-webpack-plugin');
-const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+const xmldoc = require('xmldoc');
+const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const DynamicPublicPath = require('../src/webpack-plugins/dynamic-public-path');
 const EnvirnmentMarkPlugin = require('../src/webpack-plugins/environment-mark-plugin');
 const { localIdentName, staticsDomain } = require('../src/constants');
-const { SRC_DIR, BUILD_DIR } = require('yoshi-config/paths');
-
+const {
+  ROOT_DIR,
+  SRC_DIR,
+  BUILD_DIR,
+  STATICS_DIR,
+  POM_FILE,
+  TSCONFIG_FILE,
+} = require('yoshi-config/paths');
 const project = require('yoshi-config');
 const {
   toIdentifier,
   isSingleEntry,
   isProduction: checkIsProduction,
   inTeamCity: checkInTeamCity,
-  getPOM,
+  isTypescriptProject: checkIsTypescriptProject,
 } = require('yoshi-helpers');
 
 const reScript = /\.js?$/;
@@ -36,6 +45,8 @@ const isProduction = checkIsProduction();
 
 const inTeamCity = checkInTeamCity();
 
+const isTypescriptProject = checkIsTypescriptProject();
+
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const computedSeparateCss =
@@ -45,12 +56,20 @@ const computedSeparateCss =
 
 const artifactVersion = process.env.ARTIFACT_VERSION;
 
-// Set the local dev-server url as a default public path
-let publicPath = project.servers.cdn.url;
+// default public path
+let publicPath = '/';
 
-// In case we are running in CI, change the public path according to the real path on the cdn
-if (inTeamCity && artifactVersion) {
-  const artifactName = getPOM().valueWithPath('artifactId');
+if (isDevelopment) {
+  // Set the local dev-server url as a path
+  publicPath = project.servers.cdn.url;
+}
+
+// In case we are running in CI and there is a pom.xml file, change the public path according to the path on the cdn
+// The path is created using artifactName from pom.xml and artifact version from an environment param.
+if (inTeamCity && artifactVersion && fs.existsSync(POM_FILE)) {
+  const artifactName = new xmldoc.XmlDocument(
+    fs.readFileSync(POM_FILE),
+  ).valueWithPath('artifactId');
 
   publicPath = `${staticsDomain}/${artifactName}/${artifactVersion.replace(
     '-SNAPSHOT',
@@ -78,6 +97,19 @@ const splitChunksConfig = isObject(useSplitChunks)
   : defaultSplitChunksConfig;
 
 const entry = project.entry || project.defaultEntry;
+
+function overrideRules(rules, patch) {
+  return rules.map(ruleToPatch => {
+    let rule = patch(ruleToPatch);
+    if (rule.rules) {
+      rule = { ...rule, rules: overrideRules(rule.rules, patch) };
+    }
+    if (rule.oneOf) {
+      rule = { ...rule, oneOf: overrideRules(rule.oneOf, patch) };
+    }
+    return rule;
+  });
+}
 
 // Common function to get style loaders
 const getStyleLoaders = ({
@@ -118,6 +150,11 @@ const getStyleLoaders = ({
                 ? [
                     {
                       loader: MiniCssExtractPlugin.loader,
+                      options: {
+                        // By default it use publicPath in webpackOptions.output
+                        // We are overriding it to restore relative paths in url() calls
+                        publicPath: '',
+                      },
                     },
                   ]
                 : [
@@ -207,14 +244,17 @@ const getStyleLoaders = ({
 // Common configuration chunk to be used for both
 // client-side (client.js) and server-side (server.js) bundles
 // -----------------------------------------------------------------------------
-function createCommonWebpackConfig({ isDebug = true } = {}) {
+function createCommonWebpackConfig({
+  isDebug = true,
+  withLocalSourceMaps,
+} = {}) {
   const config = {
     context: SRC_DIR,
 
     mode: isProduction ? 'production' : 'development',
 
     output: {
-      path: path.join(BUILD_DIR, 'statics'),
+      path: STATICS_DIR,
       publicPath,
       pathinfo: isDebug,
       filename: isDebug ? '[name].bundle.js' : '[name].bundle.min.js',
@@ -241,8 +281,23 @@ function createCommonWebpackConfig({ isDebug = true } = {}) {
     },
 
     plugins: [
+      // This gives some necessary context to module not found errors, such as
+      // the requesting resource
+      new ModuleNotFoundPlugin(ROOT_DIR),
       // https://github.com/Urthen/case-sensitive-paths-webpack-plugin
       new CaseSensitivePathsPlugin(),
+      // https://github.com/Realytics/fork-ts-checker-webpack-plugin
+      ...(isTypescriptProject && project.experimentalServerBundle
+        ? [
+            // Since `fork-ts-checker-webpack-plugin` requires you to have
+            // TypeScript installed when its required, we only require it if
+            // this is a TypeScript project
+            new (require('fork-ts-checker-webpack-plugin'))({
+              tsconfig: TSCONFIG_FILE,
+              async: false,
+            }),
+          ]
+        : []),
       // Way of communicating to `babel-preset-yoshi` or `babel-preset-wix` that
       // it should optimize for Webpack
       new EnvirnmentMarkPlugin(),
@@ -379,7 +434,7 @@ function createCommonWebpackConfig({ isDebug = true } = {}) {
         // Rules for GraphQL
         {
           test: /\.(graphql|gql)$/,
-          include: [SRC_DIR],
+          include: project.unprocessedModules,
           loader: 'graphql-tag/loader',
         },
       ],
@@ -388,8 +443,24 @@ function createCommonWebpackConfig({ isDebug = true } = {}) {
     // https://webpack.js.org/configuration/stats/
     stats: 'none',
 
+    // https://github.com/webpack/node-libs-browser/tree/master/mock
+    node: {
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty',
+      __dirname: true,
+    },
+
     // https://webpack.js.org/configuration/devtool
-    devtool: inTeamCity ? 'source-map' : 'cheap-module-source-map',
+    // If we are in CI or requested explictly we create full source maps
+    // Once we are in a local build, we create cheap eval source map only
+    // for a development build (hence the !isProduction)
+    devtool:
+      inTeamCity || withLocalSourceMaps
+        ? 'source-map'
+        : !isProduction
+          ? 'cheap-module-eval-source-map'
+          : false,
   };
 
   return config;
@@ -398,8 +469,12 @@ function createCommonWebpackConfig({ isDebug = true } = {}) {
 //
 // Configuration for the client-side bundle (client.js)
 // -----------------------------------------------------------------------------
-function createClientWebpackConfig({ isAnalyze = false, isDebug = true } = {}) {
-  const config = createCommonWebpackConfig({ isDebug });
+function createClientWebpackConfig({
+  isAnalyze = false,
+  isDebug = true,
+  withLocalSourceMaps,
+} = {}) {
+  const config = createCommonWebpackConfig({ isDebug, withLocalSourceMaps });
 
   const styleLoaders = getStyleLoaders({ embedCss: true, isDebug });
 
@@ -478,9 +553,6 @@ function createClientWebpackConfig({ isAnalyze = false, isDebug = true } = {}) {
       // Hacky way of correcting Webpack's publicPath
       new DynamicPublicPath(),
 
-      // https://github.com/darrenscerri/duplicate-package-checker-webpack-plugin
-      new DuplicatePackageCheckerPlugin({ verbose: true }),
-
       // https://webpack.js.org/plugins/define-plugin/
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(
@@ -503,15 +575,7 @@ function createClientWebpackConfig({ isAnalyze = false, isDebug = true } = {}) {
       }),
 
       // https://github.com/th0r/webpack-bundle-analyzer
-      ...(isAnalyze
-        ? [
-            new BundleAnalyzerPlugin({
-              generateStatsFile: true,
-              // Path is relative to the output dir
-              statsFilename: '../../target/webpack-stats.min.json',
-            }),
-          ]
-        : []),
+      ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
     ],
 
     module: {
@@ -523,14 +587,6 @@ function createClientWebpackConfig({ isAnalyze = false, isDebug = true } = {}) {
         // Rules for Style Sheets
         ...styleLoaders,
       ],
-    },
-
-    // https://github.com/webpack/node-libs-browser/tree/master/mock
-    node: {
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty',
-      __dirname: true,
     },
 
     externals: project.externals,
@@ -548,8 +604,114 @@ function createClientWebpackConfig({ isAnalyze = false, isDebug = true } = {}) {
   return clientConfig;
 }
 
+//
+// Configuration for the server-side bundle (server.js)
+// -----------------------------------------------------------------------------
+function createServerWebpackConfig({ isDebug = true } = {}) {
+  const config = createCommonWebpackConfig({ isDebug });
+
+  const styleLoaders = getStyleLoaders({ embedCss: false, isDebug });
+
+  const serverConfig = {
+    ...config,
+
+    name: 'server',
+
+    target: 'node',
+
+    entry: {
+      server: './server',
+    },
+
+    output: {
+      ...config.output,
+      path: BUILD_DIR,
+      filename: '[name].js',
+      chunkFilename: 'chunks/[name].js',
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      globalObject: "(typeof self !== 'undefined' ? self : this)",
+      hotUpdateMainFilename: 'updates/[hash].hot-update.json',
+      hotUpdateChunkFilename: 'updates/[id].[hash].hot-update.js',
+      // Point sourcemap entries to original disk location (format as URL on Windows)
+      devtoolModuleFilenameTemplate: info =>
+        path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+    },
+
+    // Webpack mutates resolve object, so clone it to avoid issues
+    // https://github.com/webpack/webpack/issues/4817
+    resolve: {
+      ...config.resolve,
+    },
+
+    module: {
+      ...config.module,
+
+      rules: [
+        ...overrideRules(config.module.rules, rule => {
+          // Override paths to static assets
+          if (rule.loader === 'file-loader' || rule.loader === 'url-loader') {
+            return {
+              ...rule,
+              options: {
+                ...rule.options,
+                emitFile: false,
+              },
+            };
+          }
+
+          return rule;
+        }),
+
+        // Rules for Style Sheets
+        ...styleLoaders,
+      ],
+    },
+
+    externals: [
+      nodeExternals({
+        whitelist: [reStyle, reAssets, /bootstrap-hot-loader/],
+      }),
+    ],
+
+    plugins: [
+      ...config.plugins,
+
+      // https://webpack.js.org/plugins/banner-plugin/
+      new webpack.BannerPlugin({
+        // https://github.com/evanw/node-source-map-support
+        banner: 'require("source-map-support").install();',
+        raw: true,
+        entryOnly: false,
+      }),
+    ],
+
+    // https://webpack.js.org/configuration/optimization
+    optimization: {
+      // Do not modify/set the value of `process.env.NODE_ENV`
+      nodeEnv: false,
+    },
+
+    // Do not replace node globals with polyfills
+    // https://webpack.js.org/configuration/node/
+    node: {
+      console: false,
+      global: false,
+      process: false,
+      Buffer: false,
+      __filename: false,
+      __dirname: false,
+    },
+
+    devtool: 'cheap-module-inline-source-map',
+  };
+
+  return serverConfig;
+}
+
 module.exports = {
   createCommonWebpackConfig,
   createClientWebpackConfig,
+  createServerWebpackConfig,
   getStyleLoaders,
 };

@@ -4,7 +4,10 @@ const expect = require('chai').expect;
 const tp = require('../../../test-helpers/test-phases');
 const fx = require('../../../test-helpers/fixtures');
 const hooks = require('../../../test-helpers/hooks');
-const { insideTeamCity } = require('../../../test-helpers/env-variables');
+const {
+  insideTeamCity,
+  outsideTeamCity,
+} = require('../../../test-helpers/env-variables');
 const retryPromise = require('retry-promise').default;
 const fetch = require('node-fetch');
 const { localIdentName } = require('../src/constants');
@@ -69,6 +72,11 @@ describe('Aggregator: Build', () => {
             'src/styles/my-file-less.global.less': `.q {.w {color: blue;}}`,
             'src/styles/my-file.scss': `.a {.b {color: blue;}}`,
             'src/styles/my-file.st.css': `.root {.stylableClass {color: pink;}}`,
+            'src/app3.js': `require('./styles/file-with-url.css');`,
+            'src/styles/file-with-url.css': `body {
+              background: url('../assets/image.jpg');
+            }`,
+            'src/assets/image.jpg': '(^_^)'.repeat(2500),
             'app/a/style.scss': fx.scss(),
             'app/b/style.less': fx.less(),
             'app/c/style.less': `@import (once) '../b/style.less';`,
@@ -94,6 +102,7 @@ describe('Aggregator: Build', () => {
               entry: {
                 first: './app1.js',
                 second: './app2.js',
+                third: './app3.js',
               },
               features: {
                 externalizeRelativeLodash: false,
@@ -145,6 +154,12 @@ describe('Aggregator: Build', () => {
         expect(resp.stdout).to.contain(`Finished 'sass'`);
         expect(resp.stdout).to.contain(`Finished 'less'`);
         expect(resp.stdout).to.contain(`Finished 'babel'`);
+      });
+
+      it('should output relative paths in css url statements', () => {
+        expect(test.content('./dist/statics/third.css')).to.contain(
+          'url(assets/image.jpg',
+        );
       });
     });
 
@@ -698,6 +713,11 @@ describe('Aggregator: Build', () => {
       expect(test.content('dist/src/something.js')).to.contain($inject);
       expect(test.content('something.js')).not.to.contain($inject);
     });
+
+    it('should generate source maps', () => {
+      expect(test.list('dist/statics')).to.contain('app.bundle.min.js.map');
+      expect(test.list('dist/statics')).to.contain('app.bundle.js.map');
+    });
   });
 
   describe('simple project with typescript and angular that runs on CI (Teamcity) and with 1 entry point w/o extension', () => {
@@ -806,6 +826,22 @@ describe('Aggregator: Build', () => {
     });
   });
 
+  describe('build project with --stats flag', () => {
+    before(() => {
+      test = tp.create();
+      test
+        .setup({
+          'src/client.js': '',
+          'package.json': fx.packageJson(),
+        })
+        .execute('build', ['--stats']);
+    });
+
+    it('should generate stats files', () => {
+      expect(test.list('target')).to.contain('webpack-stats.json');
+    });
+  });
+
   describe('build project with --analyze flag', () => {
     const analyzerServerPort = '8888';
     const analyzerContentPart =
@@ -818,7 +854,6 @@ describe('Aggregator: Build', () => {
           'src/client.js': '',
           'package.json': fx.packageJson(),
         })
-        .verbose()
         .spawn('build', ['--analyze']);
     });
 
@@ -827,11 +862,35 @@ describe('Aggregator: Build', () => {
         expect(content).to.contain(analyzerContentPart),
       );
     });
+  });
 
-    it('should generate stats files', () => {
-      return checkServerIsServing({ port: analyzerServerPort }).then(
-        expect(test.list('target')).to.contain('webpack-stats.min.json'),
-      );
+  describe('build on local machine', () => {
+    it('should not generate source maps if not requested', () => {
+      test = tp.create();
+      test
+        .setup({
+          'src/client.js': 'const aVarialbe = 3',
+          'package.json': fx.packageJson(),
+        })
+        .execute('build', [], outsideTeamCity);
+
+      expect(test.list('dist/statics')).not.to.contain('app.bundle.min.js.map');
+      expect(test.list('dist/statics')).not.to.contain('app.bundle.js.map');
+    });
+  });
+
+  describe('build project with --source-map flag', () => {
+    it('should generate source maps', () => {
+      test = tp.create();
+      test
+        .setup({
+          'src/client.js': 'const aVarialbe = 3',
+          'package.json': fx.packageJson(),
+        })
+        .execute('build', ['--source-map'], outsideTeamCity);
+
+      expect(test.list('dist/statics')).to.contain('app.bundle.min.js.map');
+      expect(test.list('dist/statics')).to.contain('app.bundle.js.map');
     });
   });
 

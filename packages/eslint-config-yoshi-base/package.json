@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-yoshi-base",
-  "version": "3.12.0",
+  "version": "3.16.0",
   "description": "eslint configuration for yoshi",
   "main": "index.js",
   "keywords": [
@@ -19,9 +19,6 @@
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-prettier": "^2.6.0",
     "prettier": "^1.11.1"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "eslint-plugin-jest": "^21.17.0"

@@ -1,5 +1,158 @@
 # Changelog
 
+## 3.16.0 (2018-10-17)
+
+#### :rocket: New Feature
+* `create-yoshi-app`
+  * [#644](https://github.com/wix/yoshi/pull/644) Add `.editorconfig` to all templates ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [#648](https://github.com/wix/yoshi/pull/648) Copy `.ejs`/`.vm` files to `dist/statics` in experimental server bundle ([@ronami](https://github.com/ronami))
+  * [#635](https://github.com/wix/yoshi/pull/635) Redirect `.min` assets to non min assets in start-app ([@ronami](https://github.com/ronami))
+* `create-yoshi-app`
+  * [#633](https://github.com/wix/yoshi/pull/633) Fix generated `launch.json` for VSCode across templates ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :nail_care: Polish
+* `yoshi`
+  * [#647](https://github.com/wix/yoshi/pull/647) Update `rtlcss-webpack-plugin` version ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :memo: Documentation
+* [#643](https://github.com/wix/yoshi/pull/643) Change readme to latest changes, make it more informative ([@ronami](https://github.com/ronami))
+
+#### :house: Internal
+* Other
+  * [#640](https://github.com/wix/yoshi/pull/640) Run only publish ([@ranyitz](https://github.com/ranyitz))
+* `create-yoshi-app`
+  * [#638](https://github.com/wix/yoshi/pull/638) Improve e2e tests by emulating production installations ([@ronami](https://github.com/ronami))
+  * [#639](https://github.com/wix/yoshi/pull/639) Verify each package's publishConfig to prevent redundant publishes to public npm ([@ronami](https://github.com/ronami))
+
+## 3.15.5 (2018-10-15)
+
+#### :bug: Bug Fix
+* `jest-yoshi-preset`
+  * [#637](https://github.com/wix/yoshi/pull/637) Use the new `@stylable` dependencies ([@shlomitc](https://github.com/shlomitc))
+
+## 3.15.4 (2018-10-14)
+
+#### :nail_care: Polish
+* `yoshi`
+  * [#627](https://github.com/wix/yoshi/pull/627) Use relative public path in css `url()` calls ([@ranyitz](https://github.com/ranyitz))
+* Other
+  * [#629](https://github.com/wix/yoshi/pull/629) Fix link path in api configurations docs ([@lbelinsk](https://github.com/lbelinsk))
+
+#### :memo: Documentation
+* [#632](https://github.com/wix/yoshi/pull/632) Fix docs for configuring debugging in vscode ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :house: Internal
+* [#634](https://github.com/wix/yoshi/pull/634) Simplify publish script ([@ranyitz](https://github.com/ranyitz))
+
+## 3.15.3 (2018-10-11)
+
+#### :house: Internal
+* `yoshi`
+  * [#486](https://github.com/wix/yoshi/pull/486) Upgrade stylable to new scoped package ([@tomrav](https://github.com/tomrav))
+
+## 3.15.2 (2018-10-10)
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [#623](https://github.com/wix/yoshi/pull/623) Fix wallaby babel ([@netanelgilad](https://github.com/netanelgilad))
+  * [#626](https://github.com/wix/yoshi/pull/626) Fix debugging of jest tests ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :nail_care: Polish
+* `yoshi`
+  * [#624](https://github.com/wix/yoshi/pull/624) Further simplify `wallabyCommon.tests` by using unshift ([@splintor](https://github.com/splintor))
+
+## 3.15.1 (2018-10-10)
+
+#### :nail_care: Polish
+* `yoshi`
+  * [#622](https://github.com/wix/yoshi/pull/622) Simplify `wallabyCommon.tests` update in wallaby-mocha.js ([@splintor](https://github.com/splintor))
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [2d31fdd](https://github.com/wix/yoshi/commit/2d31fdd678e5cbf87d05cfbc5ab6a762b6960c9d) Fix a bug that caused Yoshi to crash if TypeScript wasn't installed ([@ronami](https://github.com/ronami))
+
+## 3.15.0 (2018-10-09)
+
+#### :rocket: New Feature
+* `bootstrap-hot-loader`, `create-yoshi-app`, `yoshi-config`, `yoshi`
+  * [#586](https://github.com/wix/yoshi/pull/586) Server-side bundle experimental feature ([@ronami](https://github.com/ronami))
+* `yoshi`
+  * [#618](https://github.com/wix/yoshi/pull/618) Forward options after `--jest` to jest bin ([@ranyitz](https://github.com/ranyitz))
+
+#### :bug: Bug Fix
+* `create-yoshi-app`, `yoshi`
+  * [#619](https://github.com/wix/yoshi/pull/619) Fix wallaby configuration when working with `jest` ([@netanelgilad](https://github.com/netanelgilad))
+* `yoshi-config`, `yoshi`
+  * [#620](https://github.com/wix/yoshi/pull/620) Change the stats file destination to `target` instead of `dist` ([@ranyitz](https://github.com/ranyitz))
+
+#### :nail_care: Polish
+* `yoshi`
+  * [#621](https://github.com/wix/yoshi/pull/621) Remove the duplicate package checker plugin ([@ranyitz](https://github.com/ranyitz))
+
+## 3.14.2 (2018-10-09)
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [#617](https://github.com/wix/yoshi/pull/617) Fix a bug when using `--stats` option and stats files was not written ([@ronenst](https://github.com/ronenst))
+  * [#616](https://github.com/wix/yoshi/pull/616) [eslint] Log warnings to the console if there are only warnings ([@ranyitz](https://github.com/ranyitz))
+  * [#614](https://github.com/wix/yoshi/pull/614) [tslint] Use `yoshi lint <files>` filter on top of the files specified in `tsconfig` ([@ranyitz](https://github.com/ranyitz))
+
+#### :nail_care: Polish
+* `create-yoshi-app`
+  * [#615](https://github.com/wix/yoshi/pull/615) Improve Lint on typescript templates ([@ranyitz](https://github.com/ranyitz))
+    * Ignore `d.ts` files on the `lint-staged` config
+    * Include `*.spec.tsx` files on the default `tsconfig.json`
+
+#### :house: Internal
+* `yoshi-config`
+  * [#613](https://github.com/wix/yoshi/pull/613) Remove unused config options (`isUniversalProject`, `isEsModule`) ([@ronami](https://github.com/ronami))
+
+## 3.14.1 (2018-10-03)
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [#609](https://github.com/wix/yoshi/pull/609) Fix Karma bundle failing if it tries to access native Node modules ([@netanelgilad](https://github.com/netanelgilad))
+
+## 3.14.0 (2018-10-03)
+
+#### :bug: Bug Fix
+* `yoshi-helpers`
+  * [#607](https://github.com/wix/yoshi/pull/607) Bring back `mergeByConcat` function ([@ranyitz](https://github.com/ranyitz))
+* `yoshi`
+  * [#573](https://github.com/wix/yoshi/pull/573) Enable opt-in to build with `devtool: source-map` ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :nail_care: Polish
+* [#606](https://github.com/wix/yoshi/pull/606) add npm version badge ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :house: Internal
+* `jest-environment-yoshi-bootstrap`, `jest-environment-yoshi-puppeteer`, `jest-yoshi-preset`, `yoshi-helpers`, `yoshi`
+  * [#608](https://github.com/wix/yoshi/pull/608) Use exact versions for inner cross dependencies ([@ranyitz](https://github.com/ranyitz))
+
+## 3.13.1 (2018-10-02)
+
+#### :bug: Bug Fix
+* `yoshi-helpers`, `yoshi`
+  * [#602](https://github.com/wix/yoshi/pull/602) Create webpack's public path only in case there is a `pom.xml` file ([@ranyitz](https://github.com/ranyitz))
+
+#### :nail_care: Polish
+* [#601](https://github.com/wix/yoshi/pull/601) Fix broken link to bundle analysis guide ([@ronenst](https://github.com/ronenst))
+* [#603](https://github.com/wix/yoshi/pull/603) Fix broken link to images on `debugging.md` ([@sidoruk-sv](https://github.com/sidoruk-sv))
+
+## 3.13.0 (2018-10-02)
+
+#### :rocket: New Feature
+* `yoshi`
+  * [#582](https://github.com/wix/yoshi/pull/582) Process `unprocessedModules` with graphql loader ([@eddierl](https://github.com/eddierl))
+* `yoshi-config`, `yoshi`
+  * [#591](https://github.com/wix/yoshi/pull/591) Add `--stats` flag to generate `dist/webpack-stats.json` ([@ronenst](https://github.com/ronenst))
+
+#### :bug: Bug Fix
+* `create-yoshi-app`
+  * [#597](https://github.com/wix/yoshi/pull/597) Add dynamic `%organization%`  into some of `pom.xml` templates ([@sidoruk-sv](https://github.com/sidoruk-sv))
+
 ## 3.12.0 (2018-10-02)
 
 #### :rocket: New Feature

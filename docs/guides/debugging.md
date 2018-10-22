@@ -40,7 +40,7 @@ Several commercial and open source tools can connect to Node's Inspector and the
  "name": "Run Tests",
  "type": "node",
  "request": "launch",
- "args" : ["test", "--debug"],
+ "args" : ["test", "--debug-brk"],
  "port": 9229,
  "program": "${workspaceFolder}/node_modules/.bin/yoshi"
  }
@@ -48,7 +48,7 @@ Several commercial and open source tools can connect to Node's Inspector and the
 
 #### [JetBrains WebStorm](https://www.jetbrains.com/webstorm/)  [2017.1+ and other JetBrains IDEs](https://nodejs.org/en/docs/guides/debugging-getting-started/#jetbrains-webstorm-2017-1-and-other-jetbrains-ides)
 - Create a new Node.js debug configuration
-![image description](./assets/debug.png)
+![Webstorm > new "Run/Debug configuration" popup](../assets/debug.png)
 - In order to manually tell WebStorm the debugging port, create another configuration, use type 'Attach to Node.js/Chrome'
-![image description](./assets/remotedebug.png)
+![Webstorm > Attach to Node.js/Chrome](../assets/remotedebug.png)
 - Press debug in order to start the remote debugger configuration then start (without debugging) the 'Node.js' configuration

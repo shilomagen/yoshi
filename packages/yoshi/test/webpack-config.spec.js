@@ -141,7 +141,7 @@ describe('Webpack basic configs', () => {
         );
       });
 
-      it('should use local dev-server url for public case on local dev environment', () => {
+      it('should use "/" for default public path', () => {
         test
           .setup({
             'src/client.js': `console.log('test');`,
@@ -151,13 +151,24 @@ describe('Webpack basic configs', () => {
           });
 
         expect(test.content('dist/statics/app.bundle.js')).to.contain(
-          `__webpack_require__.p = "http://localhost:3200/"`,
+          `__webpack_require__.p = "/"`,
+        );
+      });
+
+      it('should use local dev-server url for public path on local dev environment', () => {
+        test.spawn('start');
+
+        return fetchClientBundle({ port: 3200, file: 'app.bundle.js' }).then(
+          bundle =>
+            expect(bundle).to.contain(
+              '__webpack_require__.p = "http://localhost:3200/"',
+            ),
         );
       });
 
       // we'll need to uncomment the strategy from `webpack.config.client.js` before we can unskip this test
       // eslint-disable-next-line
-      it.skip('should construct the publich path according to the package name and version when "unpkg" set to true on package.json', () => {
+      it.skip('should construct the public path according to the package name and version when "unpkg" set to true on package.json', () => {
         test
           .setup({
             'src/client.js': `console.log('test');`,
@@ -256,43 +267,6 @@ describe('Webpack basic configs', () => {
     });
   });
 
-  describe('when multiple versions of the same package exist in a build', () => {
-    const warningOutput = 'WARNING in shared-dep';
-    let child;
-
-    afterEach(() => killSpawnProcessAndHisChildren(child));
-
-    beforeEach(() => {
-      test.setup({
-        'src/client.js': `require('shared-dep'); require('dep')`,
-        'node_modules/shared-dep/package.json': `{"name": "shared-dep", "version": "2"}`,
-        'node_modules/shared-dep/index.js': '',
-        'node_modules/dep/index.js': `require('shared-dep')`,
-        'node_modules/dep/package.json': `{"name": "dep"}`,
-        'node_modules/dep/node_modules/shared-dep/package.json': `{"name": "shared-dep", "version": "1"}`,
-        'node_modules/dep/node_modules/shared-dep/index.js': '',
-      });
-    });
-
-    it('should warn on build command', () => {
-      res = test.execute('build');
-      expect(res.stdout).to.contain(warningOutput);
-    });
-
-    it('should warn on start command', () => {
-      child = test.spawn('start');
-      return checkStdout(warningOutput);
-    });
-
-    function checkStdout(str) {
-      return retryPromise(
-        { backoff: 100 },
-        () =>
-          test.stdout.indexOf(str) > -1 ? Promise.resolve() : Promise.reject(),
-      );
-    }
-  });
-
   describe('Module concatenation plugin', () => {
     let child;
 
@@ -331,17 +305,6 @@ describe('Webpack basic configs', () => {
         bundle => expect(bundle).to.not.contain('CONCATENATED MODULE'),
       );
     });
-
-    function fetchClientBundle({
-      backoff = 100,
-      max = 10,
-      port = fx.defaultServerPort(),
-      file = '',
-    } = {}) {
-      return retryPromise({ backoff, max }, () =>
-        fetch(`http://localhost:${port}/${file}`).then(res => res.text()),
-      );
-    }
   });
 
   describe('Performance budget', () => {
@@ -429,3 +392,14 @@ describe('Webpack basic configs', () => {
     });
   });
 });
+
+function fetchClientBundle({
+  backoff = 100,
+  max = 10,
+  port = fx.defaultServerPort(),
+  file = '',
+} = {}) {
+  return retryPromise({ backoff, max }, () =>
+    fetch(`http://localhost:${port}/${file}`).then(res => res.text()),
+  );
+}

@@ -129,3 +129,15 @@ module.exports = {
   },
 };
 ```
+
+### Setup Files
+
+If you want to run some code before your tests you can use one of the 3  following setup files (1 for each environment):
+
+* `<rootDir>/test/setup.component.(j|t)s`: JSDOM (component)
+* `<rootDir>/test/setup.server.(j|t)s`: Bootstrap (server)
+* `<rootDir>/test/setup.e2e.(j|t)s`: Puppeteer (e2e)
+
+These setup files are actually [Jests's `setupTestFrameworkScriptFile`](https://jestjs.io/docs/en/configuration#setuptestframeworkscriptfile-string)
+
+> A path to a module that runs some code to configure or set up the testing framework before each test.

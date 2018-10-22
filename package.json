@@ -8,7 +8,7 @@
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap",
     "test-yoshi": "npm test --prefix ./packages/yoshi",
-    "test": "lerna run test --concurrency 1",
+    "test": ":",
     "e2e": "npm run e2e --prefix ./packages/create-yoshi-app",
     "test-configs": "lerna run test --concurrency 1 --ignore '+(yoshi|create-yoshi-app)'",
     "test-create-yoshi-app": "npm test --prefix ./packages/create-yoshi-app",
@@ -16,7 +16,7 @@
     "changelog": "lerna-changelog",
     "create-yoshi-app:dev": "npm run dev --prefix ./packages/create-yoshi-app",
     "website:dev": "npm start --prefix './website'",
-    "customPublish": "node scripts/customPublish",
+    "customPublish": "lerna exec 'node ../../scripts/customPublish.js'",
     "createVersion": "node scripts/createVersion"
   },
   "husky": {
@@ -65,7 +65,9 @@
     "semver": "^5.5.0",
     "shelljs": "^0.8.2",
     "strip-ansi": "^4.0.0",
-    "tempy": "^0.2.1"
+    "tempy": "^0.2.1",
+    "verdaccio": "^3.8.3",
+    "wait-port": "^0.2.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

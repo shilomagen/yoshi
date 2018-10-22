@@ -39,14 +39,14 @@ The following are the default values for the CDN server's port, mount directory 
 
 Flag | Short Flag | Description | Default Value
 ---- | ---------- | ----------- | ------------
---output <dir> | | The output directory for static assets. | `statics`
 --analyze | | run webpack-bundle-analyzer plugin. |
+--stats | | output webpack stats file to `dist/webpack-stats.json` (see also [bundle analysis](../guides/bundle-analyze.md))|
+--source-map | | Explictly emit bundle source maps. |
 
 This task will perform the following:
 
 1. Compile using `TypeScript` (`*.ts`) or `babel` (`*.js`) files into `dist/`. In case you do not want to transpile server (node), you can remove `.babelrc`/`babel.config.js`/`tsconfig`/package json's `babel` key. If you still need those (for transpiling client code), please use `yoshi.runIndividualTranspiler`.
 2. Copy assets to `dist` folder (ejs/html/images...).
-3. Add [Webpack stats](https://webpack.js.org/api/stats/) files to `target/`. Two files will be created: `target/webpack-stats.min.json` and `target/webpack-stats.json` for production and development builds respectively. These files can later be used for [bundle analysis](docs/faq/WEBPACK-ANALYZE.md).
 
 You can specify multiple entry points in your `package.json` file. This gives the ability build multiple bundles at once. More info about Webpack entries can be found [here](http://webpack.github.io/docs/configuration.html#entry).
 
@@ -123,6 +123,14 @@ yoshi: {
       "testRegex": "/src/.*\\.spec\\.(ts|tsx)$"
     }
   ```
+
+  Every other argument you'll pass to `yoshi test --jest` will be forwarded to jest, For example:
+
+  ```yoshi test --jest --forceExit foo.spec.js```
+
+  Will run jest on `foo.spec.js` file and will apply [`forceExit`](https://jestjs.io/docs/en/cli#forceexit).
+
+  __Note:__ `--debug & --debug-brk` won't be transfer to jest, but instead will be [used in yoshi for test debugging](https://jestjs.io/docs/en/troubleshooting#tests-are-failing-and-you-don-t-know-why)
 
 ## lint
 

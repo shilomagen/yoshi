@@ -7,8 +7,6 @@ const childProcess = require('child_process');
 const detect = require('detect-port');
 const project = require('yoshi-config');
 const queries = require('./queries');
-const xmldoc = require('xmldoc');
-const { POM_FILE } = require('yoshi-config/paths');
 
 module.exports.copyFile = (source, target) =>
   new Promise((resolve, reject) => {
@@ -158,8 +156,13 @@ module.exports.tryRequire = name => {
   }
 };
 
-module.exports.getPOM = () => {
-  const pom = fs.readFileSync(POM_FILE, 'utf-8');
+// NOTE: We don't use "mergeByConcat" function in our codebase anymore,
+// it's here only for legacy reasons.
+// Versions 3.10.0 -> 3.13.1 would not work after the deletion of this function
+function concatCustomizer(objValue, srcValue) {
+  if (Array.isArray(objValue)) {
+    return objValue.concat(srcValue);
+  }
+}
 
-  return new xmldoc.XmlDocument(pom);
-};
+module.exports.mergeByConcat = require('lodash/fp').mergeWith(concatCustomizer);
