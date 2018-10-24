@@ -213,7 +213,7 @@ describe('Aggregator: Start', () => {
           .spawn('start');
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
-          content => expect(content).to.contain(`"reload":false`),
+          content => expect(content).to.match(/reload\\?":false/),
         );
       });
     });
@@ -228,7 +228,7 @@ describe('Aggregator: Start', () => {
           .spawn('start');
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
-          content => expect(content).to.contain('"hmr":true'),
+          content => expect(content).to.match(/hmr\\?":true/),
         );
       });
 
@@ -250,12 +250,12 @@ describe('Aggregator: Start', () => {
           port: 3200,
           file: 'app.bundle.js',
         });
-        expect(appBundleContent).to.contain('"hmr":true');
+        expect(appBundleContent).to.match(/hmr\\?":true/);
         const app2BundleContent = await checkServerIsServing({
           port: 3200,
           file: 'app2.bundle.js',
         });
-        expect(app2BundleContent).to.contain('"hmr":true');
+        expect(app2BundleContent).to.match(/hmr\\?":true/);
       });
 
       it('should create bundle with disabled hot module replacement if there is {hmr: false} in config', () => {
@@ -270,7 +270,7 @@ describe('Aggregator: Start', () => {
           .spawn('start');
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
-          content => expect(content).to.contain(`"hmr":false`),
+          content => expect(content).to.match(/hmr\\?":false/),
         );
       });
 
@@ -344,8 +344,8 @@ describe('Aggregator: Start', () => {
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content => {
-            expect(content).to.not.contain(`"reload":false`);
-            expect(content).to.not.contain(`"hot":false`);
+            expect(content).to.not.match(/hmr\\?":false/);
+            expect(content).to.not.match(/hot\\?":false/);
           },
         );
       });
