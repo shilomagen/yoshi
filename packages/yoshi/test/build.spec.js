@@ -24,7 +24,7 @@ const $inject = 'something.$inject = ["$http"];';
 describe('Aggregator: Build', () => {
   let test;
 
-  describe('simple development project with separate styles (sass and less), babel, JSON, commons chunks with custom name and some UMD modules', () => {
+  describe('simple development project with separate styles (sass and less), babel, JSON, commons chunks with custom name, some UMD modules and source maps', () => {
     let resp;
     const compiledSaasStyle = '.a .b {\n  color: red; }';
     const compiledLessStyle = '.a .b {\n  color: red;\n}';
@@ -117,7 +117,7 @@ describe('Aggregator: Build', () => {
             ),
           ],
         )
-        .execute('build', []);
+        .execute('build', ['--source-map']);
     });
 
     after(() => {
