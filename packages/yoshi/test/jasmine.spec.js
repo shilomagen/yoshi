@@ -47,7 +47,7 @@ describe('test --jasmine', () => {
       })
       .execute('test', ['--jasmine']);
     expect(res.code).to.equal(1);
-    expect(res.stderr).to.contain('Unexpected identifier');
+    expect(res.stderr).to.match(/Unexpected (identifier|token)/);
   });
 
   it('should output test coverage when --coverage is passed', () => {

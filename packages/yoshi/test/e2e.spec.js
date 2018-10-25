@@ -151,7 +151,7 @@ describe('Aggregator: e2e', () => {
         .execute('test', ['--protractor'], outsideTeamCity);
 
       expect(res.code).to.equal(1);
-      expect(res.stdout).to.contain('Unexpected identifier');
+      expect(res.stdout).to.match(/Unexpected (identifier|token)/);
     });
   });
 
