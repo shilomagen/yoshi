@@ -15,14 +15,5 @@
       "PR: Internal :house:": ":house: Internal"
     }
   },
-  "command": {
-    "publish": {
-      "allowBranch": [
-        "master",
-        "version_*",
-        "hotfix_*"
-      ]
-    }
-  },
   "version": "3.16.3"
 }
