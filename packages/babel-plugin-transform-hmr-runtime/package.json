@@ -11,9 +11,11 @@
   "author": "Yoshi team & Artem Yavorskyi <artemy@wix.com>",
   "license": "ISC",
   "peerDependencies": {
-    "@babel/core": "^7.1.2"
+    "@babel/core": "^7.1.2",
+    "babel-core": "^7.0.0-0"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.2",
     "@babel/plugin-syntax-jsx": "^7.0.0",
     "@babel/helper-plugin-test-runner": "7.1.0",
     "babel-core": "^7.0.0-0",
