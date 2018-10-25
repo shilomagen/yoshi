@@ -1,6 +1,6 @@
 {
   "name": "create-yoshi-app",
-  "version": "3.16.0",
+  "version": "3.16.1",
   "description": "create yoshi powered apps",
   "keywords": [
     "create",
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "jest",
-    "e2e": "node scripts/runE2E.js",
+    "e2e": "DISABLE_SENTRY=1 node scripts/runE2E.js",
     "dev": "node scripts/dev.js"
   },
   "jest": {
