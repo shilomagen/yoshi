@@ -279,9 +279,7 @@ describe('Aggregator: Start', () => {
           .setup({
             'src/client.js': `import { render } from 'react-dom';
               render(<App />, rootEl);`,
-            '.babelrc': `{"presets": ["${require.resolve(
-              'babel-preset-yoshi',
-            )}"]}`,
+            '.babelrc': `{"presets": ["babel-preset-yoshi"]}`,
             'package.json': fx.packageJson(
               {
                 hmr: 'auto',
@@ -289,6 +287,7 @@ describe('Aggregator: Start', () => {
               },
               {
                 react: '16.0.0',
+                'react-dom': '16.0.0',
               },
             ),
           })
@@ -307,15 +306,14 @@ describe('Aggregator: Start', () => {
           .setup({
             'src/client.js': `import { render } from 'react-dom';
               render(<App />, rootEl);`,
-            '.babelrc': `{"presets": ["${require.resolve(
-              'babel-preset-yoshi',
-            )}"]}`,
+            '.babelrc': `{"presets": ["babel-preset-yoshi"]}`,
             'package.json': fx.packageJson(
               {
                 hmr: 'auto',
               },
               {
                 react: '16.0.0',
+                'react-dom': '16.0.0',
               },
             ),
           })
