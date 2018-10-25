@@ -4,7 +4,7 @@ Yoshi provides its own preset for full-stack, client or Node.js projects. It is 
 
 ## Usages in Yoshi projects
 
-Configure `yoshi` to use its built-in preset by adding the following to your `package.json`:
+Configure `yoshi` to use its built-in preset by adding the following to your `package.json` or with separate `babelrc`/`babel.config.js` config:
 
 ```json
 {
