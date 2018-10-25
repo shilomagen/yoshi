@@ -19,9 +19,6 @@
     "babel-core": "^7.0.0-0",
     "jest": "^23.6.0"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "babel": {
     "plugins": [
       "@babel/plugin-syntax-jsx"
