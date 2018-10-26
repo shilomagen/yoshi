@@ -30,6 +30,7 @@
     "babel-preset-yoshi": "3.16.0",
     "babel-register": "^6.26.0",
     "bfj": "^6.1.1",
+    "bundle-utils": "0.0.1",
     "case-sensitive-paths-webpack-plugin": "~2.1.1",
     "chalk": "~2.3.1",
     "chokidar": "^2.0.4",

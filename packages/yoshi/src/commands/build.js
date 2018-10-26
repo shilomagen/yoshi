@@ -11,6 +11,7 @@ const { STATS_FILE } = require('yoshi-config/paths');
 const {
   runIndividualTranspiler,
   petriSpecsConfig,
+  bundleTargets,
   clientProjectName,
   isAngularProject,
   clientFilesPath,
@@ -23,6 +24,7 @@ const {
   shouldRunWebpack,
   shouldRunLess,
   shouldRunSass,
+  parseBundleTarget,
 } = require('yoshi-helpers');
 const { printAndExitOnErrors } = require('../error-handler');
 
@@ -91,6 +93,11 @@ module.exports = runner.command(
       );
       const debugCallbackPath = require.resolve('../webpack-debug-callback');
       const webpackConfig = require(configPath)();
+      const bundleConfigs =
+        bundleTargets &&
+        bundleTargets.map((query, i) =>
+          parseBundleTarget(query, { ignoreId: i === 0 }),
+        );
 
       const defaultOptions = {
         configPath,
@@ -104,6 +111,7 @@ module.exports = runner.command(
               callbackPath: productionCallbackPath,
               statsFilename: cliArgs.stats ? STATS_FILE : false,
               configParams: {
+                bundleConfigs,
                 isDebug: false,
                 isAnalyze: cliArgs.analyze,
                 withLocalSourceMaps: cliArgs['source-map'],
