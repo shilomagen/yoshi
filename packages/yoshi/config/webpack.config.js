@@ -630,7 +630,7 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
     target: 'node',
 
     entry: {
-      server: ['./server', '../test/fake-server'].find(exists),
+      server: ['./server', '../test/dev-server'].find(exists),
     },
 
     output: {
